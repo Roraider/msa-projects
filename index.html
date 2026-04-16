@@ -135,14 +135,14 @@ tr:hover td{background:#f8f8f7}
         <select id="f-type">
           <option>Data Import</option><option>OIG Updates</option><option>Tenders</option>
           <option>Automation</option><option>Admin</option><option>Network Analytics</option>
-          <option>Web Widgets</option><option>Internal Tools</option>
+          <option>Web Widgets</option><option>Internal Tools</option><option>Presentations</option>
         </select>
       </div>
       <div class="form-row"><label>Client</label>
         <select id="f-client">
           <option>Metroline</option><option>CDC Australia</option><option>Kinetic</option>
           <option>Bus Queensland</option><option>Internal</option><option>Translink</option>
-          <option>Lucknow PS</option><option>Transit Pulse</option>
+          <option>Lucknow PS</option><option>Transit Pulse</option><option>GoAhead UK</option>
         </select>
       </div>
       <div class="form-row"><label>Status</label>
@@ -154,7 +154,7 @@ tr:hover td{background:#f8f8f7}
       <div class="form-row"><label>Priority</label>
         <select id="f-priority">
           <option>BAU Ongoing</option><option>High</option><option>Medium</option>
-          <option>Low</option><option>One day... :(</option>
+          <option>Low</option><option>One day... :(</option><option>TBD</option>
         </select>
       </div>
       <div class="form-row"><label>Person (lead — initials avatar)</label><select id="f-person"></select></div>
@@ -197,10 +197,10 @@ tr:hover td{background:#f8f8f7}
 </div>
 
 <script>
-const TC={"Data Import":{bg:"#16a34a",c:"#fff"},"OIG Updates":{bg:"#2563eb",c:"#fff"},"Tenders":{bg:"#db2777",c:"#fff"},"Automation":{bg:"#7c3aed",c:"#fff"},"Admin":{bg:"#374151",c:"#fff"},"Network Analytics":{bg:"#0891b2",c:"#fff"},"Web Widgets":{bg:"#d97706",c:"#fff"},"Internal Tools":{bg:"#f87171",c:"#fff"}};
+const TC={"Data Import":{bg:"#16a34a",c:"#fff"},"OIG Updates":{bg:"#2563eb",c:"#fff"},"Tenders":{bg:"#db2777",c:"#fff"},"Automation":{bg:"#7c3aed",c:"#fff"},"Admin":{bg:"#374151",c:"#fff"},"Network Analytics":{bg:"#0891b2",c:"#fff"},"Web Widgets":{bg:"#d97706",c:"#fff"},"Internal Tools":{bg:"#f87171",c:"#fff"},"Presentations":{bg:"#ec4899",c:"#fff"}};
 const SC={"Ongoing":{bg:"#fbbf24",c:"#78350f"},"Working on it":{bg:"#818cf8",c:"#1e1b4b"},"Come on, seriously":{bg:"#374151",c:"#f9fafb"},"Stuck with Client":{bg:"#ef4444",c:"#fff"},"Stuck with us":{bg:"#f97316",c:"#fff"}};
-const PC={"BAU Ongoing":{bg:"#06b6d4",c:"#fff"},"High":{bg:"#8b5cf6",c:"#fff"},"Medium":{bg:"#6366f1",c:"#fff"},"Low":{bg:"#a3a3a3",c:"#fff"},"One day... :(":{bg:"#fbbf24",c:"#78350f"}};
-const CC={"Metroline":"#ef4444","CDC Australia":"#eab308","Kinetic":"#3b82f6","Bus Queensland":"#f97316","Internal":"#6b7280","Translink":"#8b5cf6","Lucknow PS":"#ec4899","Transit Pulse":"#14b8a6"};
+const PC={"BAU Ongoing":{bg:"#06b6d4",c:"#fff"},"High":{bg:"#8b5cf6",c:"#fff"},"Medium":{bg:"#6366f1",c:"#fff"},"Low":{bg:"#a3a3a3",c:"#fff"},"One day... :(":{bg:"#fbbf24",c:"#78350f"},"TBD":{bg:"#6b7280",c:"#fff"}};
+const CC={"Metroline":"#ef4444","CDC Australia":"#eab308","Kinetic":"#3b82f6","Bus Queensland":"#f97316","Internal":"#6b7280","Translink":"#8b5cf6","Lucknow PS":"#ec4899","Transit Pulse":"#14b8a6","GoAhead UK":"#16a34a"};
 const SENT={"Positive":{bg:"#22c55e",c:"#fff",icon:"😊"},"Neutral":{bg:"#f59e0b",c:"#fff",icon:"😐"},"Negative":{bg:"#ef4444",c:"#fff",icon:"😟"}};
 const STATUSES=["Ongoing","Working on it","Come on, seriously","Stuck with Client","Stuck with us"];
 const COLORS=["#2563eb","#16a34a","#7c3aed","#db2777","#d97706","#0891b2","#b45309","#4f46e5","#0f766e","#be123c","#1d4ed8","#15803d","#6d28d9","#9f1239","#c2410c","#374151"];
@@ -210,6 +210,7 @@ const DEFAULT_PEOPLE=[
   {id:2,name:"Jen",initials:"JB",bg:"#16a34a",c:"#fff"},
   {id:3,name:"Ben",initials:"BM",bg:"#7c3aed",c:"#fff"},
   {id:4,name:"Jason",initials:"JP",bg:"#d97706",c:"#fff"},
+  {id:5,name:"Ryan",initials:"RG",bg:"#ef4444",c:"#fff"},
 ];
 const DEFAULT_PROJECTS=[
   {id:1,name:"Metroline Manchester Ongoing",av:["MS"],type:"Data Import",client:"Metroline",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Positive"},
@@ -229,6 +230,12 @@ const DEFAULT_PROJECTS=[
   {id:15,name:"OTR Improvement Project",av:["BM"],type:"Web Widgets",client:"Translink",status:"Stuck with Client",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Positive"},
   {id:16,name:"Transit Pulse",av:["MS","BM"],type:"Internal Tools",client:"Transit Pulse",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:["Ben","Matt"],path:"https://murphyst...",sentiment:"Negative"},
   {id:17,name:"TheSched",av:["BM","JB","JP"],type:"Internal Tools",client:"Internal",status:"Stuck with us",priority:"Medium",reviewed:"Apr 14",due:"",people:["Ben","Jen"],path:"",sentiment:"Positive"},
+  {id:18,name:"Narangba Valley Maths Comp - Questions",av:["BM"],type:"Presentations",client:"Internal",status:"Working on it",priority:"Medium",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Neutral"},
+  {id:19,name:"Liverpool Tranche 2",av:["MS"],type:"Tenders",client:"Metroline",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:20,name:"GoAhead UK Austrics Imports",av:["MS"],type:"Data Import",client:"GoAhead UK",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:21,name:"GoAhead UK OMNI Bus Imports",av:["MS"],type:"Data Import",client:"GoAhead UK",status:"Working on it",priority:"TBD",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:22,name:"MSA Internal Policy Review",av:["BM"],type:"Admin",client:"Internal",status:"Working on it",priority:"Medium",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Neutral"},
+  {id:23,name:"MSA Probity Compliance Policies",av:["RG"],type:"Admin",client:"Internal",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:[],path:"",sentiment:"Neutral"},
 ];
 
 const PROJ_KEY='msa-projects-v5', PEOPLE_KEY='msa-people';
