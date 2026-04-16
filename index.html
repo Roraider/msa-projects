@@ -336,10 +336,10 @@ function render(){
     document.getElementById('tbody').innerHTML=f.length
       ?f.map(p=>`<tr>
         <td><span class="pname">${p.name}</span></td>
-        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${peopleB(p.people)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
         <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
         <td style="color:#888;font-size:11px">${p.reviewed}</td>
-        <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
+        <td>${dueCell(p.due)}</td><td>${avs(p.av)}</td>
         <td>${pathCell(p.path)}</td><td>${sentB(p.sentiment)}</td>
         <td><button class="act-btn" onclick="openModal(${p.id})">Edit</button><button class="act-btn del-btn" onclick="deleteProject(${p.id})">Delete</button></td>
       </tr>`).join('')
