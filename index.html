@@ -372,6 +372,10 @@ function peopleB(team){
   const arr=Array.isArray(team)?team:(team?[team]:[]);
   return arr.map(n=>{const p=personByName(n);return `<span class="people-full" style="background:${p.bg};color:${p.c||'#fff'};margin-right:2px">${n}</span>`;}).join('');
 }
+function peopleAvs(team){
+  const arr=Array.isArray(team)?team:(team?[team]:[]);
+  return `<div class="avatars">${arr.map(n=>{const p=personByName(n);return `<div class="avatar" style="background:${p.bg};color:${p.c||'#fff'}">${p.initials}</div>`;}).join('')}</div>`;
+}
 function sentB(s){const v=SENT[s];if(!v)return s;return `<span class="badge" style="background:${v.bg};color:${v.c};min-width:80px;text-align:center">${v.icon} ${s}</span>`;}
 function pathCell(p){
   if(!p)return `<span style="color:#ccc;font-size:11px">—</span>`;
@@ -437,10 +441,10 @@ function render(){
     const completed=f.filter(p=>p.section==='completed');
     const rowHtml=p=>`<tr>
         <td><span class="pname">${p.name}</span></td>
-        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${peopleAvs(p.people)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
         <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
         <td style="color:#888;font-size:11px">${p.reviewed}</td>
-        <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
+        <td>${dueCell(p.due)}</td><td>${(()=>{const lead=people.find(x=>x.initials===p.av[0]);return lead?`<span class="people-full" style="background:${lead.bg};color:${lead.c||'#fff'}">${lead.name}</span>`:'—';})()}</td>
         <td>${pathCell(p.path)}</td><td>${sentB(p.sentiment)}</td>
         <td><button class="act-btn" onclick="openModal(${p.id})">Edit</button><button class="act-btn del-btn" onclick="deleteProject(${p.id})">Delete</button></td>
       </tr>`;
