@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MSA Ongoing Projects</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;background:#f8f8f7;color:#1a1a1a;padding:20px}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.view-toggle{display:flex;border:0.5px solid #ccc;border-radius:8px;overflow:hidden}
+.vbtn{padding:5px 14px;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;color:#666}
+.vbtn.active{background:#e8e8e6;color:#1a1a1a}
+.newbtn{padding:6px 14px;font-size:12px;font-weight:500;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.newbtn:hover{background:#1d4ed8}
+.peoplebtn{padding:6px 14px;font-size:12px;font-weight:500;background:transparent;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;color:#1a1a1a}
+.peoplebtn:hover{background:#e8e8e6}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters input,.filters select{padding:5px 8px;font-size:12px;border:0.5px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stat{background:#e8e8e6;border-radius:8px;padding:8px 12px}
+.stat-l{font-size:11px;color:#666;margin-bottom:2px}
+.stat-v{font-size:18px;font-weight:500;color:#1a1a1a}
+.section-label{font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.section-label::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1200px;background:#fff;border-radius:12px;overflow:hidden}
+th{text-align:left;padding:8px 10px;color:#666;font-weight:500;border-bottom:0.5px solid #e5e5e5;white-space:nowrap;font-size:11px;background:#fafaf9}
+td{padding:6px 10px;border-bottom:0.5px solid #f0f0f0;vertical-align:middle;white-space:nowrap;color:#1a1a1a}
+tr:hover td{background:#f8f8f7}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500}
+.avatar{width:21px;height:21px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;border:1.5px solid #fff}
+.avatars{display:flex}
+.pname{font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
+.act-btn{padding:3px 8px;font-size:11px;border:0.5px solid #ddd;border-radius:4px;background:transparent;cursor:pointer;color:#666;margin-right:3px}
+.act-btn:hover{background:#f0f0f0}
+.del-btn{color:#ef4444;border-color:#fca5a5}
+.path-cell{font-size:11px;color:#888;max-width:120px;overflow:hidden;text-overflow:ellipsis;display:block}
+.path-link{font-size:11px;color:#3b82f6;max-width:120px;overflow:hidden;text-overflow:ellipsis;display:block;text-decoration:none}
+.people-full{display:inline-block;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:500;min-width:60px;text-align:center}
+.kanban{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;align-items:start}
+.k-col{background:#e8e8e6;border-radius:12px;padding:10px}
+.k-col-hdr{font-size:12px;font-weight:500;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;color:#1a1a1a}
+.k-count{font-size:11px;color:#666;background:#fff;border-radius:10px;padding:1px 7px}
+.k-card{background:#fff;border:0.5px solid #e5e5e5;border-radius:8px;padding:10px;margin-bottom:8px;cursor:pointer}
+.k-card:hover{border-color:#ccc}
+.k-card-name{font-weight:500;font-size:12px;color:#1a1a1a;margin-bottom:6px;line-height:1.4}
+.k-card-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.overlay{display:none;min-height:100vh;background:rgba(0,0,0,0.45);align-items:flex-start;justify-content:center;padding:40px 16px;position:fixed;inset:0;z-index:1000}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;border:0.5px solid #e5e5e5;padding:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:16px;color:#1a1a1a}
+.form-row{margin-bottom:10px}
+.form-row label{display:block;font-size:11px;color:#666;margin-bottom:3px}
+.form-row input,.form-row select{width:100%;padding:6px 8px;font-size:12px;border:0.5px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-cancel{padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:8px;background:transparent;cursor:pointer;color:#1a1a1a}
+.btn-save{padding:6px 14px;font-size:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.empty-state{padding:2rem;text-align:center;color:#888}
+.people-screen{display:none}
+.people-screen.open{display:block}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:12px}
+.person-card{background:#fff;border:0.5px solid #e5e5e5;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.person-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
+.person-name{font-weight:500;font-size:13px;color:#1a1a1a}
+.person-initials{font-size:11px;color:#888}
+.person-actions{display:flex;gap:6px;margin-top:4px}
+.color-swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent}
+.swatch.selected{border-color:#1a1a1a}
+.back-btn{padding:5px 12px;font-size:12px;border:0.5px solid #ccc;border-radius:8px;background:transparent;cursor:pointer;color:#1a1a1a;margin-right:8px}
+</style>
+</head>
+<body>
+
+<div style="margin-bottom:16px">
+  <div style="font-size:20px;font-weight:500;color:#1a1a1a;margin-bottom:2px">MSA Ongoing Projects</div>
+  <div style="font-size:12px;color:#888">Active work tracker</div>
+</div>
+
+<div class="topbar">
+  <div class="view-toggle">
+    <button class="vbtn active" id="btn-table" onclick="setView('table')">&#9776; Table</button>
+    <button class="vbtn" id="btn-kanban" onclick="setView('kanban')">&#9638; Kanban</button>
+  </div>
+  <button class="newbtn" id="new-project-btn" onclick="openModal()">+ New project</button>
+  <button class="peoplebtn" onclick="showPeople()">&#128101; Manage people</button>
+</div>
+
+<div id="main-view">
+  <div class="filters">
+    <input id="search" placeholder="Search..." oninput="render()" style="width:140px"/>
+    <select id="fClient" onchange="render()"><option value="">All clients</option></select>
+    <select id="fType" onchange="render()"><option value="">All types</option></select>
+    <select id="fStatus" onchange="render()"><option value="">All statuses</option></select>
+    <select id="fPriority" onchange="render()"><option value="">All priorities</option></select>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="section-label">Active Work</div>
+  <div id="table-view">
+    <div class="wrap">
+      <table>
+        <thead><tr>
+          <th>Project</th><th>Person</th><th>Task type</th><th>Client</th>
+          <th>Status</th><th>Priority</th><th>Last reviewed</th><th>Due date</th>
+          <th>People</th><th>OneDrive path</th><th>Sentiment</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="kanban-view" style="display:none">
+    <div class="kanban" id="kanban"></div>
+  </div>
+</div>
+
+<div class="people-screen" id="people-screen">
+  <div style="display:flex;align-items:center;margin-bottom:4px">
+    <button class="back-btn" onclick="hidePeople()">&#8592; Back</button>
+    <span style="font-size:15px;font-weight:500;color:#1a1a1a">Manage people</span>
+    <button class="newbtn" style="margin-left:auto" onclick="openPersonModal()">+ Add person</button>
+  </div>
+  <div style="font-size:12px;color:#888;margin-bottom:4px">Team members available when creating or editing projects.</div>
+  <div class="people-grid" id="people-grid"></div>
+</div>
+
+<!-- Project modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">New project</h3>
+    <div class="form-row"><label>Project name</label><input id="f-name" placeholder="Project name"/></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Task type</label>
+        <select id="f-type">
+          <option>Data Import</option><option>OIG Updates</option><option>Tenders</option>
+          <option>Automation</option><option>Admin</option><option>Network Analytics</option>
+          <option>Web Widgets</option><option>Internal Tools</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Client</label>
+        <select id="f-client">
+          <option>Metroline</option><option>CDC Australia</option><option>Kinetic</option>
+          <option>Bus Queensland</option><option>Internal</option><option>Translink</option>
+          <option>Lucknow PS</option><option>Transit Pulse</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Status</label>
+        <select id="f-status">
+          <option>Ongoing</option><option>Working on it</option>
+          <option>Come on, seriously</option><option>Stuck with Client</option><option>Stuck with us</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Priority</label>
+        <select id="f-priority">
+          <option>BAU Ongoing</option><option>High</option><option>Medium</option>
+          <option>Low</option><option>One day... :(</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Person (initials)</label><select id="f-person"></select></div>
+      <div class="form-row"><label>People</label><select id="f-people"></select></div>
+      <div class="form-row"><label>Due date</label><input id="f-due" type="date"/></div>
+      <div class="form-row"><label>Sentiment</label>
+        <select id="f-sentiment"><option>Positive</option><option>Neutral</option><option>Negative</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label>OneDrive path</label><input id="f-path" placeholder="Y:\1000 - Projects\... or https://..."/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveProject()">Save project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Person modal -->
+<div class="overlay" id="person-overlay">
+  <div class="modal" style="max-width:360px">
+    <h3 id="person-modal-title">Add person</h3>
+    <div class="form-row"><label>Full name</label><input id="p-name" placeholder="e.g. Sarah"/></div>
+    <div class="form-row"><label>Initials (2–3 letters)</label><input id="p-initials" placeholder="e.g. SC" maxlength="3" style="text-transform:uppercase"/></div>
+    <div class="form-row">
+      <label>Avatar colour</label>
+      <div class="color-swatches" id="color-swatches"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:#f8f8f7;border-radius:8px">
+      <div id="p-preview" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:#2563eb;color:#fff">AB</div>
+      <div>
+        <div id="p-preview-name" style="font-weight:500;font-size:13px;color:#1a1a1a">Name</div>
+        <div id="p-preview-init" style="font-size:11px;color:#888">Initials</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePersonModal()">Cancel</button>
+      <button class="btn-save" onclick="savePerson()">Save person</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TC={"Data Import":{bg:"#16a34a",c:"#fff"},"OIG Updates":{bg:"#2563eb",c:"#fff"},"Tenders":{bg:"#db2777",c:"#fff"},"Automation":{bg:"#7c3aed",c:"#fff"},"Admin":{bg:"#374151",c:"#fff"},"Network Analytics":{bg:"#0891b2",c:"#fff"},"Web Widgets":{bg:"#d97706",c:"#fff"},"Internal Tools":{bg:"#f87171",c:"#fff"}};
+const SC={"Ongoing":{bg:"#fbbf24",c:"#78350f"},"Working on it":{bg:"#818cf8",c:"#1e1b4b"},"Come on, seriously":{bg:"#374151",c:"#f9fafb"},"Stuck with Client":{bg:"#ef4444",c:"#fff"},"Stuck with us":{bg:"#f97316",c:"#fff"}};
+const PC={"BAU Ongoing":{bg:"#06b6d4",c:"#fff"},"High":{bg:"#8b5cf6",c:"#fff"},"Medium":{bg:"#6366f1",c:"#fff"},"Low":{bg:"#a3a3a3",c:"#fff"},"One day... :(":{bg:"#fbbf24",c:"#78350f"}};
+const CC={"Metroline":"#ef4444","CDC Australia":"#eab308","Kinetic":"#3b82f6","Bus Queensland":"#f97316","Internal":"#6b7280","Translink":"#8b5cf6","Lucknow PS":"#ec4899","Transit Pulse":"#14b8a6"};
+const SENT={"Positive":{bg:"#22c55e",c:"#fff",icon:"😊"},"Neutral":{bg:"#f59e0b",c:"#fff",icon:"😐"},"Negative":{bg:"#ef4444",c:"#fff",icon:"😟"}};
+const STATUSES=["Ongoing","Working on it","Come on, seriously","Stuck with Client","Stuck with us"];
+const COLORS=["#2563eb","#16a34a","#7c3aed","#db2777","#d97706","#0891b2","#b45309","#4f46e5","#0f766e","#be123c","#1d4ed8","#15803d","#6d28d9","#9f1239","#c2410c","#374151"];
+
+const DEFAULT_PEOPLE=[
+  {id:1,name:"Matt",initials:"MS",bg:"#b5a48a",c:"#fff"},
+  {id:2,name:"Jen",initials:"JB",bg:"#16a34a",c:"#fff"},
+  {id:3,name:"Ben",initials:"BM",bg:"#7c3aed",c:"#fff"},
+  {id:4,name:"Jason",initials:"JP",bg:"#d97706",c:"#fff"},
+];
+const DEFAULT_PROJECTS=[
+  {id:1,name:"Metroline Manchester Ongoing",av:["MS"],type:"Data Import",client:"Metroline",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Positive"},
+  {id:2,name:"CDC General Support",av:["JB"],type:"OIG Updates",client:"CDC Australia",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Jen",path:"",sentiment:"Neutral"},
+  {id:3,name:"Kinetic General Support",av:["MS"],type:"OIG Updates",client:"Kinetic",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Positive"},
+  {id:4,name:"DPAA OIG Calendar & Automation",av:["JB","MS"],type:"OIG Updates",client:"Bus Queensland",status:"Come on, seriously",priority:"High",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:5,name:"UK GTFS Realtime Data AWS Cleanup",av:["MS","BM"],type:"Tenders",client:"Internal",status:"Come on, seriously",priority:"Medium",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:6,name:"RATLR - Line Diagrams & Frequency Tables",av:["JP"],type:"Automation",client:"Translink",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:7,name:"CDC Data Platform Project",av:["JB"],type:"Automation",client:"CDC Australia",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:8,name:"Bus QLD Routing Solution",av:["BM"],type:"Automation",client:"Bus Queensland",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
+  {id:9,name:"Kinetic Optibus RR Import Process",av:["MS"],type:"Automation",client:"Kinetic",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:10,name:"Website Redesign",av:["MS"],type:"Admin",client:"Internal",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
+  {id:11,name:"Olympics Network 2032",av:["BM"],type:"Network Analytics",client:"Translink",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
+  {id:12,name:"Primary School Timetable Optimisation",av:["JB"],type:"Network Analytics",client:"Lucknow PS",status:"Working on it",priority:"Medium",reviewed:"Apr 14",due:"",people:"Jen",path:"",sentiment:"Neutral"},
+  {id:13,name:"Bus Pass Tool Updates",av:["JP"],type:"Web Widgets",client:"Bus Queensland",status:"Come on, seriously",priority:"One day... :(",reviewed:"Apr 14",due:"",people:"Jason",path:"Y:\\1000 - Project...",sentiment:"Neutral"},
+  {id:14,name:"Translink Timetable Manager",av:["BM"],type:"Web Widgets",client:"Translink",status:"Working on it",priority:"One day... :(",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Neutral"},
+  {id:15,name:"OTR Improvement Project",av:["BM"],type:"Web Widgets",client:"Translink",status:"Stuck with Client",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
+  {id:16,name:"Transit Pulse",av:["MS","BM"],type:"Internal Tools",client:"Transit Pulse",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Ben",path:"https://murphyst...",sentiment:"Negative"},
+  {id:17,name:"TheSched",av:["BM","JB","JP"],type:"Internal Tools",client:"Internal",status:"Stuck with us",priority:"Medium",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
+];
+
+const PROJ_KEY='msa-projects-v5', PEOPLE_KEY='msa-people';
+let projects=[], people=[], editId=null, editPersonId=null, currentView='table', nextId=100, nextPersonId=10, selectedColor=COLORS[0];
+
+function load(){
+  people=JSON.parse(JSON.stringify(DEFAULT_PEOPLE));
+  projects=JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+  try{
+    const rp=localStorage.getItem(PEOPLE_KEY);
+    if(rp){const parsed=JSON.parse(rp);if(parsed&&parsed.length)people=parsed;}
+  }catch(e){}
+  try{
+    const rj=localStorage.getItem(PROJ_KEY);
+    if(rj){const d=JSON.parse(rj);if(d&&d.projects&&d.projects.length){projects=d.projects;nextId=d.nextId||100;}}
+  }catch(e){}
+  buildColorSwatches();populateFilters();render();
+}
+function saveProjects(){try{localStorage.setItem(PROJ_KEY,JSON.stringify({projects,nextId}));}catch(e){}}
+function savePeopleStore(){try{localStorage.setItem(PEOPLE_KEY,JSON.stringify(people));}catch(e){}}
+
+function buildColorSwatches(){
+  document.getElementById('color-swatches').innerHTML=COLORS.map(c=>`<div class="swatch${c===selectedColor?' selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join('');
+}
+function selectColor(c){selectedColor=c;buildColorSwatches();updatePreview();}
+function updatePreview(){
+  const nm=document.getElementById('p-name').value||'Name';
+  const init=(document.getElementById('p-initials').value||'AB').toUpperCase();
+  const el=document.getElementById('p-preview');
+  el.style.background=selectedColor;el.textContent=init;
+  document.getElementById('p-preview-name').textContent=nm;
+  document.getElementById('p-preview-init').textContent=init;
+}
+
+function personByInitials(i){return people.find(p=>p.initials===i)||{bg:'#6b7280',c:'#fff'};}
+function personByName(n){return people.find(p=>p.name===n)||{bg:'#6b7280',c:'#fff'};}
+
+function badge(text,map){const s=map[text]||{bg:'#6b7280',c:'#fff'};return `<span class="badge" style="background:${s.bg};color:${s.c}">${text}</span>`;}
+function clientB(c){return `<span class="badge" style="background:${CC[c]||'#6b7280'};color:#fff">${c}</span>`;}
+function avs(list){return `<div class="avatars">${list.map(i=>{const p=personByInitials(i);return `<div class="avatar" style="background:${p.bg};color:${p.c||'#fff'}">${i}</div>`;}).join('')}</div>`;}
+function peopleB(n){const p=personByName(n);return `<span class="people-full" style="background:${p.bg};color:${p.c||'#fff'}">${n}</span>`;}
+function sentB(s){const v=SENT[s];if(!v)return s;return `<span class="badge" style="background:${v.bg};color:${v.c};min-width:80px;text-align:center">${v.icon} ${s}</span>`;}
+function pathCell(p){
+  if(!p)return `<span style="color:#ccc;font-size:11px">—</span>`;
+  if(p.startsWith('http'))return `<a class="path-link" href="${p}" target="_blank" title="${p}">${p}</a>`;
+  return `<span class="path-cell" title="${p}">${p}</span>`;
+}
+function dueCell(d){
+  if(!d)return `<span style="color:#ccc;font-size:11px">—</span>`;
+  const dt=new Date(d);const now=new Date();
+  const diff=Math.ceil((dt-now)/(1000*60*60*24));
+  const fmt=dt.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+  if(diff<0)return `<span style="color:#ef4444;font-size:11px;font-weight:500">${fmt}</span>`;
+  if(diff<=7)return `<span style="color:#f59e0b;font-size:11px;font-weight:500">${fmt}</span>`;
+  return `<span style="color:#888;font-size:11px">${fmt}</span>`;
+}
+
+function populateFilters(){
+  ['fClient','fType','fStatus','fPriority'].forEach(id=>{
+    const key={fClient:'client',fType:'type',fStatus:'status',fPriority:'priority'}[id];
+    const sel=document.getElementById(id);const cur=sel.value;
+    while(sel.options.length>1)sel.remove(1);
+    [...new Set(projects.map(p=>p[key]))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+    sel.value=cur;
+  });
+}
+function populatePeopleDropdowns(){
+  ['f-person','f-people'].forEach(id=>{
+    const sel=document.getElementById(id);const cur=sel.value;sel.innerHTML='';
+    if(id==='f-person'){people.forEach(p=>{const o=document.createElement('option');o.value=p.initials;o.textContent=`${p.initials} — ${p.name}`;sel.appendChild(o);});}
+    else{people.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=p.name;sel.appendChild(o);});}
+    sel.value=cur;
+  });
+}
+
+function filtered(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const fc=document.getElementById('fClient').value,ft=document.getElementById('fType').value;
+  const fs=document.getElementById('fStatus').value,fp=document.getElementById('fPriority').value;
+  return projects.filter(p=>(!q||p.name.toLowerCase().includes(q))&&(!fc||p.client===fc)&&(!ft||p.type===ft)&&(!fs||p.status===fs)&&(!fp||p.priority===fp));
+}
+
+function render(){
+  const f=filtered();
+  document.getElementById('stats').innerHTML=[
+    {label:'Total projects',val:f.length},
+    {label:'Ongoing',val:f.filter(p=>p.status==='Ongoing').length},
+    {label:'Working on it',val:f.filter(p=>p.status==='Working on it').length},
+    {label:'Needs attention',val:f.filter(p=>['Come on, seriously','Stuck with Client','Stuck with us'].includes(p.status)).length},
+  ].map(s=>`<div class="stat"><div class="stat-l">${s.label}</div><div class="stat-v">${s.val}</div></div>`).join('');
+
+  if(currentView==='table'){
+    document.getElementById('tbody').innerHTML=f.length
+      ?f.map(p=>`<tr>
+        <td><span class="pname">${p.name}</span></td>
+        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
+        <td style="color:#888;font-size:11px">${p.reviewed}</td>
+        <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
+        <td>${pathCell(p.path)}</td><td>${sentB(p.sentiment)}</td>
+        <td><button class="act-btn" onclick="openModal(${p.id})">Edit</button><button class="act-btn del-btn" onclick="deleteProject(${p.id})">Delete</button></td>
+      </tr>`).join('')
+      :`<tr><td colspan="12" class="empty-state">No projects match your filters.</td></tr>`;
+  } else {
+    document.getElementById('kanban').innerHTML=STATUSES.map(st=>{
+      const cards=f.filter(p=>p.status===st);const sc=SC[st]||{bg:'#6b7280'};
+      return `<div class="k-col">
+        <div class="k-col-hdr"><span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${sc.bg};display:inline-block"></span>${st}</span><span class="k-count">${cards.length}</span></div>
+        ${cards.map(p=>`<div class="k-card" onclick="openModal(${p.id})">
+          <div class="k-card-name">${p.name}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">${avs(p.av)} ${peopleB(p.people)}</div>
+          ${p.due?`<div style="font-size:11px;color:#888;margin-bottom:4px">Due: ${dueCell(p.due)}</div>`:''}
+          <div class="k-card-meta">${badge(p.type,TC)}${clientB(p.client)}${badge(p.priority,PC)}${sentB(p.sentiment)}</div>
+        </div>`).join('')}
+      </div>`;
+    }).join('');
+  }
+}
+
+function renderPeople(){
+  document.getElementById('people-grid').innerHTML=people.length
+    ?people.map(p=>`<div class="person-card">
+      <div class="person-av" style="background:${p.bg};color:${p.c||'#fff'}">${p.initials}</div>
+      <div class="person-name">${p.name}</div>
+      <div class="person-initials">${p.initials}</div>
+      <div class="person-actions">
+        <button class="act-btn" onclick="openPersonModal(${p.id})">Edit</button>
+        <button class="act-btn del-btn" onclick="deletePerson(${p.id})">Remove</button>
+      </div>
+    </div>`).join('')
+    :`<div style="color:#888;font-size:13px;padding:2rem">No team members yet. Add one above.</div>`;
+}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('table-view').style.display=v==='table'?'block':'none';
+  document.getElementById('kanban-view').style.display=v==='kanban'?'block':'none';
+  document.getElementById('btn-table').classList.toggle('active',v==='table');
+  document.getElementById('btn-kanban').classList.toggle('active',v==='kanban');
+  render();
+}
+
+function showPeople(){
+  document.getElementById('main-view').style.display='none';
+  document.getElementById('people-screen').classList.add('open');
+  document.getElementById('new-project-btn').style.display='none';
+  renderPeople();
+}
+function hidePeople(){
+  document.getElementById('main-view').style.display='block';
+  document.getElementById('people-screen').classList.remove('open');
+  document.getElementById('new-project-btn').style.display='';
+}
+
+function openModal(id){
+  populatePeopleDropdowns();
+  editId=id||null;
+  document.getElementById('modal-title').textContent=id?'Edit project':'New project';
+  if(id){
+    const p=projects.find(x=>x.id===id);if(!p)return;
+    document.getElementById('f-name').value=p.name;
+    document.getElementById('f-type').value=p.type;
+    document.getElementById('f-client').value=p.client;
+    document.getElementById('f-status').value=p.status;
+    document.getElementById('f-priority').value=p.priority;
+    document.getElementById('f-person').value=p.av[0]||'';
+    document.getElementById('f-people').value=p.people;
+    document.getElementById('f-due').value=p.due||'';
+    document.getElementById('f-sentiment').value=p.sentiment;
+    document.getElementById('f-path').value=p.path||'';
+  } else {
+    document.getElementById('f-name').value='';
+    document.getElementById('f-due').value='';
+    document.getElementById('f-path').value='';
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+
+function openPersonModal(id){
+  editPersonId=id||null;
+  selectedColor=COLORS[0];
+  document.getElementById('person-modal-title').textContent=id?'Edit person':'Add person';
+  if(id){
+    const p=people.find(x=>x.id===id);if(!p)return;
+    document.getElementById('p-name').value=p.name;
+    document.getElementById('p-initials').value=p.initials;
+    selectedColor=p.bg;
+  } else {
+    document.getElementById('p-name').value='';
+    document.getElementById('p-initials').value='';
+  }
+  buildColorSwatches();updatePreview();
+  document.getElementById('person-overlay').classList.add('open');
+}
+function closePersonModal(){document.getElementById('person-overlay').classList.remove('open');}
+
+function saveProject(){
+  const nm=document.getElementById('f-name').value.trim();if(!nm)return;
+  const today=new Date();
+  const reviewed=`${today.toLocaleString('en',{month:'short'})} ${today.getDate()}`;
+  if(editId){
+    const p=projects.find(x=>x.id===editId);
+    if(p){p.name=nm;p.type=document.getElementById('f-type').value;p.client=document.getElementById('f-client').value;p.status=document.getElementById('f-status').value;p.priority=document.getElementById('f-priority').value;p.av=[document.getElementById('f-person').value];p.people=document.getElementById('f-people').value;p.due=document.getElementById('f-due').value;p.sentiment=document.getElementById('f-sentiment').value;p.path=document.getElementById('f-path').value;p.reviewed=reviewed;}
+  } else {
+    projects.push({id:nextId++,name:nm,av:[document.getElementById('f-person').value],type:document.getElementById('f-type').value,client:document.getElementById('f-client').value,status:document.getElementById('f-status').value,priority:document.getElementById('f-priority').value,reviewed,due:document.getElementById('f-due').value,people:document.getElementById('f-people').value,path:document.getElementById('f-path').value,sentiment:document.getElementById('f-sentiment').value});
+  }
+  saveProjects();populateFilters();closeModal();render();
+}
+
+function savePerson(){
+  const nm=document.getElementById('p-name').value.trim();
+  const init=document.getElementById('p-initials').value.trim().toUpperCase();
+  if(!nm||!init)return;
+  if(editPersonId){
+    const p=people.find(x=>x.id===editPersonId);
+    if(p){p.name=nm;p.initials=init;p.bg=selectedColor;p.c='#fff';}
+  } else {
+    people.push({id:nextPersonId++,name:nm,initials:init,bg:selectedColor,c:'#fff'});
+  }
+  savePeopleStore();closePersonModal();renderPeople();
+}
+
+function deleteProject(id){
+  if(!confirm('Delete this project?'))return;
+  projects=projects.filter(p=>p.id!==id);
+  saveProjects();populateFilters();render();
+}
+function deletePerson(id){
+  if(!confirm('Remove this person?'))return;
+  people=people.filter(p=>p.id!==id);
+  savePeopleStore();renderPeople();
+}
+
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('person-overlay').addEventListener('click',function(e){if(e.target===this)closePersonModal();});
+document.getElementById('p-name').addEventListener('input',updatePreview);
+document.getElementById('p-initials').addEventListener('input',updatePreview);
+
+load();
+</script>
+</body>
+</html>
