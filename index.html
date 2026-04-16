@@ -368,10 +368,7 @@ function personByName(n){return people.find(p=>p.name===n)||{bg:'#6b7280',c:'#ff
 function badge(text,map){const s=map[text]||{bg:'#6b7280',c:'#fff'};return `<span class="badge" style="background:${s.bg};color:${s.c}">${text}</span>`;}
 function clientB(c){return `<span class="badge" style="background:${CC[c]||'#6b7280'};color:#fff">${c}</span>`;}
 function avs(list){return `<div class="avatars">${list.map(i=>{const p=personByInitials(i);return `<div class="avatar" style="background:${p.bg};color:${p.c||'#fff'}">${i}</div>`;}).join('')}</div>`;}
-function peopleAvs(team){
-  const arr=Array.isArray(team)?team:(team?[team]:[]);
-  return `<div class="avatars">${arr.map(n=>{const p=personByName(n);return `<div class="avatar" style="background:${p.bg};color:${p.c||'#fff'}">${p.initials}</div>`;}).join('')}</div>`;
-}
+function peopleB(team){
   const arr=Array.isArray(team)?team:(team?[team]:[]);
   return arr.map(n=>{const p=personByName(n);return `<span class="people-full" style="background:${p.bg};color:${p.c||'#fff'};margin-right:2px">${n}</span>`;}).join('');
 }
@@ -440,7 +437,7 @@ function render(){
     const completed=f.filter(p=>p.section==='completed');
     const rowHtml=p=>`<tr>
         <td><span class="pname">${p.name}</span></td>
-        <td>${peopleAvs(p.people)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
         <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
         <td style="color:#888;font-size:11px">${p.reviewed}</td>
         <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
