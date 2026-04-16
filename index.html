@@ -102,9 +102,9 @@ tr:hover td{background:#f8f8f7}
     <div class="wrap">
       <table>
         <thead><tr>
-          <th>Project</th><th>Person</th><th>Task type</th><th>Client</th>
+          <th>Project</th><th>People</th><th>Task type</th><th>Client</th>
           <th>Status</th><th>Priority</th><th>Last reviewed</th><th>Due date</th>
-          <th>People</th><th>OneDrive path</th><th>Sentiment</th><th>Actions</th>
+          <th>Person</th><th>OneDrive path</th><th>Sentiment</th><th>Actions</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -158,7 +158,7 @@ tr:hover td{background:#f8f8f7}
         </select>
       </div>
       <div class="form-row"><label>Person (initials)</label><select id="f-person"></select></div>
-      <div class="form-row"><label>People</label><select id="f-people"></select></div>
+      <div class="form-row"><label>People (hold Ctrl/Cmd for multiple)</label><select id="f-people" multiple style="height:80px"></select></div>
       <div class="form-row"><label>Due date</label><input id="f-due" type="date"/></div>
       <div class="form-row"><label>Sentiment</label>
         <select id="f-sentiment"><option>Positive</option><option>Neutral</option><option>Negative</option></select>
@@ -212,23 +212,23 @@ const DEFAULT_PEOPLE=[
   {id:4,name:"Jason",initials:"JP",bg:"#d97706",c:"#fff"},
 ];
 const DEFAULT_PROJECTS=[
-  {id:1,name:"Metroline Manchester Ongoing",av:["MS"],type:"Data Import",client:"Metroline",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Positive"},
-  {id:2,name:"CDC General Support",av:["JB"],type:"OIG Updates",client:"CDC Australia",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Jen",path:"",sentiment:"Neutral"},
-  {id:3,name:"Kinetic General Support",av:["MS"],type:"OIG Updates",client:"Kinetic",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Positive"},
-  {id:4,name:"DPAA OIG Calendar & Automation",av:["JB","MS"],type:"OIG Updates",client:"Bus Queensland",status:"Come on, seriously",priority:"High",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:5,name:"UK GTFS Realtime Data AWS Cleanup",av:["MS","BM"],type:"Tenders",client:"Internal",status:"Come on, seriously",priority:"Medium",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:6,name:"RATLR - Line Diagrams & Frequency Tables",av:["JP"],type:"Automation",client:"Translink",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:7,name:"CDC Data Platform Project",av:["JB"],type:"Automation",client:"CDC Australia",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:8,name:"Bus QLD Routing Solution",av:["BM"],type:"Automation",client:"Bus Queensland",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
-  {id:9,name:"Kinetic Optibus RR Import Process",av:["MS"],type:"Automation",client:"Kinetic",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:10,name:"Website Redesign",av:["MS"],type:"Admin",client:"Internal",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Matt",path:"",sentiment:"Neutral"},
-  {id:11,name:"Olympics Network 2032",av:["BM"],type:"Network Analytics",client:"Translink",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
-  {id:12,name:"Primary School Timetable Optimisation",av:["JB"],type:"Network Analytics",client:"Lucknow PS",status:"Working on it",priority:"Medium",reviewed:"Apr 14",due:"",people:"Jen",path:"",sentiment:"Neutral"},
-  {id:13,name:"Bus Pass Tool Updates",av:["JP"],type:"Web Widgets",client:"Bus Queensland",status:"Come on, seriously",priority:"One day... :(",reviewed:"Apr 14",due:"",people:"Jason",path:"Y:\\1000 - Project...",sentiment:"Neutral"},
-  {id:14,name:"Translink Timetable Manager",av:["BM"],type:"Web Widgets",client:"Translink",status:"Working on it",priority:"One day... :(",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Neutral"},
-  {id:15,name:"OTR Improvement Project",av:["BM"],type:"Web Widgets",client:"Translink",status:"Stuck with Client",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
-  {id:16,name:"Transit Pulse",av:["MS","BM"],type:"Internal Tools",client:"Transit Pulse",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:"Ben",path:"https://murphyst...",sentiment:"Negative"},
-  {id:17,name:"TheSched",av:["BM","JB","JP"],type:"Internal Tools",client:"Internal",status:"Stuck with us",priority:"Medium",reviewed:"Apr 14",due:"",people:"Ben",path:"",sentiment:"Positive"},
+  {id:1,name:"Metroline Manchester Ongoing",av:["MS"],type:"Data Import",client:"Metroline",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Positive"},
+  {id:2,name:"CDC General Support",av:["JB"],type:"OIG Updates",client:"CDC Australia",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Jen"],path:"",sentiment:"Neutral"},
+  {id:3,name:"Kinetic General Support",av:["MS"],type:"OIG Updates",client:"Kinetic",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Positive"},
+  {id:4,name:"DPAA OIG Calendar & Automation",av:["JB","MS"],type:"OIG Updates",client:"Bus Queensland",status:"Come on, seriously",priority:"High",reviewed:"Apr 14",due:"",people:["Matt","Jen"],path:"",sentiment:"Neutral"},
+  {id:5,name:"UK GTFS Realtime Data AWS Cleanup",av:["MS","BM"],type:"Tenders",client:"Internal",status:"Come on, seriously",priority:"Medium",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:6,name:"RATLR - Line Diagrams & Frequency Tables",av:["JP"],type:"Automation",client:"Translink",status:"Ongoing",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:7,name:"CDC Data Platform Project",av:["JB"],type:"Automation",client:"CDC Australia",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:8,name:"Bus QLD Routing Solution",av:["BM"],type:"Automation",client:"Bus Queensland",status:"Working on it",priority:"High",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Positive"},
+  {id:9,name:"Kinetic Optibus RR Import Process",av:["MS"],type:"Automation",client:"Kinetic",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:10,name:"Website Redesign",av:["MS"],type:"Admin",client:"Internal",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:["Matt"],path:"",sentiment:"Neutral"},
+  {id:11,name:"Olympics Network 2032",av:["BM"],type:"Network Analytics",client:"Translink",status:"Ongoing",priority:"Low",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Positive"},
+  {id:12,name:"Primary School Timetable Optimisation",av:["JB"],type:"Network Analytics",client:"Lucknow PS",status:"Working on it",priority:"Medium",reviewed:"Apr 14",due:"",people:["Jen"],path:"",sentiment:"Neutral"},
+  {id:13,name:"Bus Pass Tool Updates",av:["JP"],type:"Web Widgets",client:"Bus Queensland",status:"Come on, seriously",priority:"One day... :(",reviewed:"Apr 14",due:"",people:["Jason"],path:"Y:\\1000 - Project...",sentiment:"Neutral"},
+  {id:14,name:"Translink Timetable Manager",av:["BM"],type:"Web Widgets",client:"Translink",status:"Working on it",priority:"One day... :(",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Neutral"},
+  {id:15,name:"OTR Improvement Project",av:["BM"],type:"Web Widgets",client:"Translink",status:"Stuck with Client",priority:"BAU Ongoing",reviewed:"Apr 14",due:"",people:["Ben"],path:"",sentiment:"Positive"},
+  {id:16,name:"Transit Pulse",av:["MS","BM"],type:"Internal Tools",client:"Transit Pulse",status:"Working on it",priority:"Low",reviewed:"Apr 14",due:"",people:["Ben","Matt"],path:"https://murphyst...",sentiment:"Negative"},
+  {id:17,name:"TheSched",av:["BM","JB","JP"],type:"Internal Tools",client:"Internal",status:"Stuck with us",priority:"Medium",reviewed:"Apr 14",due:"",people:["Ben","Jen"],path:"",sentiment:"Positive"},
 ];
 
 const PROJ_KEY='msa-projects-v5', PEOPLE_KEY='msa-people';
@@ -269,7 +269,10 @@ function personByName(n){return people.find(p=>p.name===n)||{bg:'#6b7280',c:'#ff
 function badge(text,map){const s=map[text]||{bg:'#6b7280',c:'#fff'};return `<span class="badge" style="background:${s.bg};color:${s.c}">${text}</span>`;}
 function clientB(c){return `<span class="badge" style="background:${CC[c]||'#6b7280'};color:#fff">${c}</span>`;}
 function avs(list){return `<div class="avatars">${list.map(i=>{const p=personByInitials(i);return `<div class="avatar" style="background:${p.bg};color:${p.c||'#fff'}">${i}</div>`;}).join('')}</div>`;}
-function peopleB(n){const p=personByName(n);return `<span class="people-full" style="background:${p.bg};color:${p.c||'#fff'}">${n}</span>`;}
+function peopleB(team){
+  const arr=Array.isArray(team)?team:(team?[team]:[]);
+  return arr.map(n=>{const p=personByName(n);return `<span class="people-full" style="background:${p.bg};color:${p.c||'#fff'};margin-right:2px">${n}</span>`;}).join('');
+}
 function sentB(s){const v=SENT[s];if(!v)return s;return `<span class="badge" style="background:${v.bg};color:${v.c};min-width:80px;text-align:center">${v.icon} ${s}</span>`;}
 function pathCell(p){
   if(!p)return `<span style="color:#ccc;font-size:11px">—</span>`;
@@ -296,12 +299,15 @@ function populateFilters(){
   });
 }
 function populatePeopleDropdowns(){
-  ['f-person','f-people'].forEach(id=>{
-    const sel=document.getElementById(id);const cur=sel.value;sel.innerHTML='';
-    if(id==='f-person'){people.forEach(p=>{const o=document.createElement('option');o.value=p.initials;o.textContent=`${p.initials} — ${p.name}`;sel.appendChild(o);});}
-    else{people.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=p.name;sel.appendChild(o);});}
-    sel.value=cur;
-  });
+  const leadSel=document.getElementById('f-person');const cur=leadSel.value;
+  leadSel.innerHTML='';
+  people.forEach(p=>{const o=document.createElement('option');o.value=p.initials;o.textContent=`${p.initials} — ${p.name}`;leadSel.appendChild(o);});
+  leadSel.value=cur;
+  const teamSel=document.getElementById('f-people');
+  const curTeam=Array.from(teamSel.selectedOptions).map(o=>o.value);
+  teamSel.innerHTML='';
+  people.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=p.name;teamSel.appendChild(o);});
+  curTeam.forEach(v=>{const o=teamSel.querySelector(`option[value="${v}"]`);if(o)o.selected=true;});
 }
 
 function filtered(){
@@ -324,10 +330,10 @@ function render(){
     document.getElementById('tbody').innerHTML=f.length
       ?f.map(p=>`<tr>
         <td><span class="pname">${p.name}</span></td>
-        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${peopleB(p.people)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
         <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
         <td style="color:#888;font-size:11px">${p.reviewed}</td>
-        <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
+        <td>${dueCell(p.due)}</td><td>${avs(p.av)}</td>
         <td>${pathCell(p.path)}</td><td>${sentB(p.sentiment)}</td>
         <td><button class="act-btn" onclick="openModal(${p.id})">Edit</button><button class="act-btn del-btn" onclick="deleteProject(${p.id})">Delete</button></td>
       </tr>`).join('')
@@ -395,7 +401,8 @@ function openModal(id){
     document.getElementById('f-status').value=p.status;
     document.getElementById('f-priority').value=p.priority;
     document.getElementById('f-person').value=p.av[0]||'';
-    document.getElementById('f-people').value=p.people;
+    const teamArr=Array.isArray(p.people)?p.people:(p.people?[p.people]:[]);
+    Array.from(document.getElementById('f-people').options).forEach(o=>o.selected=teamArr.includes(o.value));
     document.getElementById('f-due').value=p.due||'';
     document.getElementById('f-sentiment').value=p.sentiment;
     document.getElementById('f-path').value=p.path||'';
@@ -432,9 +439,9 @@ function saveProject(){
   const reviewed=`${today.toLocaleString('en',{month:'short'})} ${today.getDate()}`;
   if(editId){
     const p=projects.find(x=>x.id===editId);
-    if(p){p.name=nm;p.type=document.getElementById('f-type').value;p.client=document.getElementById('f-client').value;p.status=document.getElementById('f-status').value;p.priority=document.getElementById('f-priority').value;p.av=[document.getElementById('f-person').value];p.people=document.getElementById('f-people').value;p.due=document.getElementById('f-due').value;p.sentiment=document.getElementById('f-sentiment').value;p.path=document.getElementById('f-path').value;p.reviewed=reviewed;}
+    if(p){p.name=nm;p.type=document.getElementById('f-type').value;p.client=document.getElementById('f-client').value;p.status=document.getElementById('f-status').value;p.priority=document.getElementById('f-priority').value;p.av=[document.getElementById('f-person').value];p.people=Array.from(document.getElementById('f-people').selectedOptions).map(o=>o.value);p.due=document.getElementById('f-due').value;p.sentiment=document.getElementById('f-sentiment').value;p.path=document.getElementById('f-path').value;p.reviewed=reviewed;}
   } else {
-    projects.push({id:nextId++,name:nm,av:[document.getElementById('f-person').value],type:document.getElementById('f-type').value,client:document.getElementById('f-client').value,status:document.getElementById('f-status').value,priority:document.getElementById('f-priority').value,reviewed,due:document.getElementById('f-due').value,people:document.getElementById('f-people').value,path:document.getElementById('f-path').value,sentiment:document.getElementById('f-sentiment').value});
+    projects.push({id:nextId++,name:nm,av:[document.getElementById('f-person').value],type:document.getElementById('f-type').value,client:document.getElementById('f-client').value,status:document.getElementById('f-status').value,priority:document.getElementById('f-priority').value,reviewed,due:document.getElementById('f-due').value,people:Array.from(document.getElementById('f-people').selectedOptions).map(o=>o.value),path:document.getElementById('f-path').value,sentiment:document.getElementById('f-sentiment').value});
   }
   saveProjects();populateFilters();closeModal();render();
 }
