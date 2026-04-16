@@ -333,7 +333,16 @@ function load(){
   }catch(e){}
   try{
     const rj=localStorage.getItem(PROJ_KEY);
-    if(rj){const d=JSON.parse(rj);if(d&&d.projects&&d.projects.length){projects=d.projects;nextId=d.nextId||100;}}
+    if(rj){
+      const d=JSON.parse(rj);
+      if(d&&d.projects&&d.projects.length){
+        const saved=d.projects;
+        const savedIds=new Set(saved.map(p=>p.id));
+        const newDefaults=DEFAULT_PROJECTS.filter(p=>!savedIds.has(p.id));
+        projects=[...saved,...newDefaults];
+        nextId=Math.max(d.nextId||100,...projects.map(p=>p.id+1));
+      }
+    }
   }catch(e){}
   buildColorSwatches();populateFilters();render();
 }
