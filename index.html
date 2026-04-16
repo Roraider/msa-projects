@@ -157,8 +157,8 @@ tr:hover td{background:#f8f8f7}
           <option>Low</option><option>One day... :(</option>
         </select>
       </div>
-      <div class="form-row"><label>Person (initials)</label><select id="f-person"></select></div>
-      <div class="form-row"><label>People (hold Ctrl/Cmd for multiple)</label><select id="f-people" multiple style="height:80px"></select></div>
+      <div class="form-row"><label>Person (lead — initials avatar)</label><select id="f-person"></select></div>
+      <div class="form-row" style="grid-column:1/-1"><label>People (tick all that apply)</label><div id="f-people-checks" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;padding:8px;border:0.5px solid #ddd;border-radius:8px;background:#fafaf9;min-height:40px"></div></div>
       <div class="form-row"><label>Due date</label><input id="f-due" type="date"/></div>
       <div class="form-row"><label>Sentiment</label>
         <select id="f-sentiment"><option>Positive</option><option>Neutral</option><option>Negative</option></select>
@@ -298,16 +298,22 @@ function populateFilters(){
     sel.value=cur;
   });
 }
-function populatePeopleDropdowns(){
+function populatePeopleDropdowns(selectedTeam){
   const leadSel=document.getElementById('f-person');const cur=leadSel.value;
   leadSel.innerHTML='';
   people.forEach(p=>{const o=document.createElement('option');o.value=p.initials;o.textContent=`${p.initials} — ${p.name}`;leadSel.appendChild(o);});
-  leadSel.value=cur;
-  const teamSel=document.getElementById('f-people');
-  const curTeam=Array.from(teamSel.selectedOptions).map(o=>o.value);
-  teamSel.innerHTML='';
-  people.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=p.name;teamSel.appendChild(o);});
-  curTeam.forEach(v=>{const o=teamSel.querySelector(`option[value="${v}"]`);if(o)o.selected=true;});
+  if(cur)leadSel.value=cur;
+  const teamArr=Array.isArray(selectedTeam)?selectedTeam:[];
+  const box=document.getElementById('f-people-checks');
+  box.innerHTML=people.map(p=>`
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;padding:4px 8px;border:0.5px solid #ddd;border-radius:6px;background:#fff;user-select:none">
+      <input type="checkbox" value="${p.name}" ${teamArr.includes(p.name)?'checked':''} style="width:13px;height:13px;margin:0"/>
+      <span style="width:20px;height:20px;border-radius:50%;background:${p.bg};color:${p.c||'#fff'};display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600">${p.initials}</span>
+      ${p.name}
+    </label>`).join('');
+}
+function getSelectedTeam(){
+  return Array.from(document.querySelectorAll('#f-people-checks input[type=checkbox]:checked')).map(c=>c.value);
 }
 
 function filtered(){
@@ -330,10 +336,10 @@ function render(){
     document.getElementById('tbody').innerHTML=f.length
       ?f.map(p=>`<tr>
         <td><span class="pname">${p.name}</span></td>
-        <td>${peopleB(p.people)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
+        <td>${avs(p.av)}</td><td>${badge(p.type,TC)}</td><td>${clientB(p.client)}</td>
         <td>${badge(p.status,SC)}</td><td>${badge(p.priority,PC)}</td>
         <td style="color:#888;font-size:11px">${p.reviewed}</td>
-        <td>${dueCell(p.due)}</td><td>${avs(p.av)}</td>
+        <td>${dueCell(p.due)}</td><td>${peopleB(p.people)}</td>
         <td>${pathCell(p.path)}</td><td>${sentB(p.sentiment)}</td>
         <td><button class="act-btn" onclick="openModal(${p.id})">Edit</button><button class="act-btn del-btn" onclick="deleteProject(${p.id})">Delete</button></td>
       </tr>`).join('')
@@ -390,23 +396,23 @@ function hidePeople(){
 }
 
 function openModal(id){
-  populatePeopleDropdowns();
   editId=id||null;
   document.getElementById('modal-title').textContent=id?'Edit project':'New project';
   if(id){
     const p=projects.find(x=>x.id===id);if(!p)return;
+    const teamArr=Array.isArray(p.people)?p.people:(p.people?[p.people]:[]);
+    populatePeopleDropdowns(teamArr);
     document.getElementById('f-name').value=p.name;
     document.getElementById('f-type').value=p.type;
     document.getElementById('f-client').value=p.client;
     document.getElementById('f-status').value=p.status;
     document.getElementById('f-priority').value=p.priority;
     document.getElementById('f-person').value=p.av[0]||'';
-    const teamArr=Array.isArray(p.people)?p.people:(p.people?[p.people]:[]);
-    Array.from(document.getElementById('f-people').options).forEach(o=>o.selected=teamArr.includes(o.value));
     document.getElementById('f-due').value=p.due||'';
     document.getElementById('f-sentiment').value=p.sentiment;
     document.getElementById('f-path').value=p.path||'';
   } else {
+    populatePeopleDropdowns([]);
     document.getElementById('f-name').value='';
     document.getElementById('f-due').value='';
     document.getElementById('f-path').value='';
@@ -439,9 +445,9 @@ function saveProject(){
   const reviewed=`${today.toLocaleString('en',{month:'short'})} ${today.getDate()}`;
   if(editId){
     const p=projects.find(x=>x.id===editId);
-    if(p){p.name=nm;p.type=document.getElementById('f-type').value;p.client=document.getElementById('f-client').value;p.status=document.getElementById('f-status').value;p.priority=document.getElementById('f-priority').value;p.av=[document.getElementById('f-person').value];p.people=Array.from(document.getElementById('f-people').selectedOptions).map(o=>o.value);p.due=document.getElementById('f-due').value;p.sentiment=document.getElementById('f-sentiment').value;p.path=document.getElementById('f-path').value;p.reviewed=reviewed;}
+    if(p){p.name=nm;p.type=document.getElementById('f-type').value;p.client=document.getElementById('f-client').value;p.status=document.getElementById('f-status').value;p.priority=document.getElementById('f-priority').value;p.av=[document.getElementById('f-person').value];p.people=getSelectedTeam();p.due=document.getElementById('f-due').value;p.sentiment=document.getElementById('f-sentiment').value;p.path=document.getElementById('f-path').value;p.reviewed=reviewed;}
   } else {
-    projects.push({id:nextId++,name:nm,av:[document.getElementById('f-person').value],type:document.getElementById('f-type').value,client:document.getElementById('f-client').value,status:document.getElementById('f-status').value,priority:document.getElementById('f-priority').value,reviewed,due:document.getElementById('f-due').value,people:Array.from(document.getElementById('f-people').selectedOptions).map(o=>o.value),path:document.getElementById('f-path').value,sentiment:document.getElementById('f-sentiment').value});
+    projects.push({id:nextId++,name:nm,av:[document.getElementById('f-person').value],type:document.getElementById('f-type').value,client:document.getElementById('f-client').value,status:document.getElementById('f-status').value,priority:document.getElementById('f-priority').value,reviewed,due:document.getElementById('f-due').value,people:getSelectedTeam(),path:document.getElementById('f-path').value,sentiment:document.getElementById('f-sentiment').value});
   }
   saveProjects();populateFilters();closeModal();render();
 }
