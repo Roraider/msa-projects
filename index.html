@@ -10,11 +10,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .view-toggle{display:flex;border:0.5px solid #ccc;border-radius:8px;overflow:hidden}
 .vbtn{padding:5px 14px;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;color:#666}
-.vbtn.active{background:#e8e8e6;color:#1a1a1a}
-.newbtn{padding:6px 14px;font-size:12px;font-weight:500;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer}
-.newbtn:hover{background:#1d4ed8}
-.peoplebtn{padding:6px 14px;font-size:12px;font-weight:500;background:transparent;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;color:#1a1a1a}
-.peoplebtn:hover{background:#e8e8e6}
+.vbtn.active{background:#2c2c2a;color:#f5c842}
+.newbtn{padding:6px 14px;font-size:12px;font-weight:500;background:#2c2c2a;color:#f5c842;border:none;border-radius:8px;cursor:pointer}
+.newbtn:hover{background:#444441}
+.peoplebtn{padding:6px 14px;font-size:12px;font-weight:500;background:transparent;border:0.5px solid #2c2c2a;border-radius:8px;cursor:pointer;color:#2c2c2a}
+.peoplebtn:hover{background:#f5c84220}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .filters input,.filters select{padding:5px 8px;font-size:12px;border:0.5px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
@@ -22,7 +22,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .stat-l{font-size:11px;color:#666;margin-bottom:2px}
 .stat-v{font-size:18px;font-weight:500;color:#1a1a1a}
 .section-label{font-size:12px;font-weight:500;color:#666;margin-bottom:8px;display:flex;align-items:center;gap:5px;cursor:pointer}
-.section-label::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e}
+.section-label::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#f5c842}
 .wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:1200px;background:#fff;border-radius:12px;overflow:hidden}
 th{text-align:left;padding:8px 10px;color:#666;font-weight:500;border-bottom:0.5px solid #e5e5e5;white-space:nowrap;font-size:11px;background:#fafaf9}
@@ -56,7 +56,7 @@ tr:hover td{background:#f8f8f7}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 .btn-cancel{padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:8px;background:transparent;cursor:pointer;color:#1a1a1a}
-.btn-save{padding:6px 14px;font-size:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.btn-save{padding:6px 14px;font-size:12px;background:#2c2c2a;color:#f5c842;border:none;border-radius:8px;cursor:pointer}
 .empty-state{padding:2rem;text-align:center;color:#888}
 .people-screen{display:none}
 .people-screen.open{display:block}
@@ -74,9 +74,17 @@ tr:hover td{background:#f8f8f7}
 </head>
 <body>
 
-<div style="margin-bottom:16px">
-  <div style="font-size:20px;font-weight:500;color:#1a1a1a;margin-bottom:2px">MSA Ongoing Projects</div>
-  <div style="font-size:12px;color:#888">Active work tracker</div>
+<div style="margin-bottom:16px;display:flex;align-items:center;gap:16px;padding-bottom:16px;border-bottom:3px solid #f5c842">
+  <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="24,2 46,42 2,42" fill="#2c2c2a"/>
+    <polygon points="24,10 40,38 18,38" fill="#f5c842"/>
+    <polygon points="24,18 34,34 24,34" fill="#2c2c2a"/>
+  </svg>
+  <div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:2px;color:#f5c842;text-transform:uppercase;margin-bottom:1px">Murphy Stone Analytics</div>
+    <div style="font-size:20px;font-weight:600;color:#2c2c2a;margin-bottom:1px">MSA Ongoing Projects</div>
+    <div style="font-size:12px;color:#888">Active work tracker</div>
+  </div>
 </div>
 
 <div class="topbar">
